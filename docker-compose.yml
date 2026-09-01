@@ -1,0 +1,81 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kk_erp_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=kk_erp
+      - DB_USERNAME=kk_user
+      - DB_PASSWORD=secret
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kk_network
+
+  web:
+    image: nginx:alpine
+    container_name: kk_erp_web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - kk_network
+
+  db:
+    image: mysql:8.0
+    container_name: kk_erp_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: kk_erp
+      MYSQL_USER: kk_user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    ports:
+      - "3306:3306"
+    volumes:
+      - kk_dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kk_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: kk_erp_pma
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: kk_user
+      PMA_PASSWORD: secret
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kk_network
+
+networks:
+  kk_network:
+    driver: bridge
+
+volumes:
+  kk_dbdata:
+    driver: local

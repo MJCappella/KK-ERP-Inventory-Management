@@ -5,7 +5,7 @@
 @section('content')
     <div class="space-y-6">
 
-        <!-- Page Header (Britam Style) -->
+        <!-- Page Header  -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h1 class="page-title">Branches & Store Locations</h1>

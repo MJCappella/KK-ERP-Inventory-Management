@@ -9,7 +9,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h1 class="page-title">Inter-Store Stock Transfers</h1>
-                <p class="page-subtitle">Manage internal warehouse transfers, reallocations, and stock movements between
+                <p class="page-subtitle">Manage internal transfers, reallocations and stock movements between
                     store outlets.</p>
             </div>
             <div>
@@ -18,7 +18,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    <span>+ Initiate New Transfer</span>
+                    <span>Initiate New Transfer</span>
                 </a>
             </div>
         </div>

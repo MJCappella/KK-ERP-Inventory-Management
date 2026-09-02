@@ -54,17 +54,13 @@ class Store extends Model
         return $this->hasMany(StockMovement::class);
     }
 
-    /**
-     * Get the stock quantity for a specific product in this store.
-     */
+    // Get the stock quantity for a specific product in this store.
     public function getStockForProduct(int $productId): int
     {
         return (int) ($this->stocks()->where('product_id', $productId)->value('quantity') ?? 0);
     }
 
-    /**
-     * Scope query to stores accessible by the given user.
-     */
+    // Scope query to stores accessible by the given user.
     public function scopeAccessibleBy($query, User $user)
     {
         if ($user->isAdmin()) {

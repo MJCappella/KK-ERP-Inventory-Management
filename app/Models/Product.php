@@ -53,17 +53,11 @@ class Product extends Model
         return $this->hasMany(StockMovement::class);
     }
 
-    /**
-     * Get the total stock across all stores or accessible stores.
-     */
     public function getTotalStockAttribute(): int
     {
         return (int) $this->storeStocks()->sum('quantity');
     }
 
-    /**
-     * Profit margin percentage
-     */
     public function getMarginPercentageAttribute(): float
     {
         if ($this->cost_price <= 0) {
@@ -72,9 +66,6 @@ class Product extends Model
         return round((($this->selling_price - $this->cost_price) / $this->cost_price) * 100, 1);
     }
 
-    /**
-     * Check if product is low stock overall or in a store
-     */
     public function isLowStock(?int $storeId = null): bool
     {
         if ($storeId) {

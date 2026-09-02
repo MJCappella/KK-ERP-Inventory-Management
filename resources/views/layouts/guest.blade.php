@@ -35,7 +35,7 @@
 </head>
 
 <body class="bg-slate-900 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
-    <div class="w-full max-w-5xl">
+    <div class="w-full max-w-md">
         @yield('content')
     </div>
 </body>

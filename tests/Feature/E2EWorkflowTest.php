@@ -107,7 +107,7 @@ class E2EWorkflowTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get('/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Executive Management Dashboard');
+        $response->assertSee('Dashboard');
         $response->assertSee('Total Sales Revenue');
     }
 

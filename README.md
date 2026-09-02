@@ -27,7 +27,7 @@ A robust, multi-branch, multi-store Wholesale & Retail Inventory Management Syst
 - **Physical Count Adjustments:** Manual stock count reconciliation (write-offs, breakage, count variances) with mandatory audit justification notes.
 - **Double-Entry Stock Movements Ledger:** Chronological, immutable audit trail recording every inventory change with before/after balances, user attribution, movement type badges (`INBOUND`, `SALE`, `TRANSFER_OUT`, `TRANSFER_IN`, `ADJUSTMENT`), and transaction references.
 - **Executive Management Dashboard:** High-level KPIs (Total Sales Revenue, Stock Valuation at retail and cost, In-Stock Units, Low-Stock Alerts, Store Performance breakdown, Top-Selling SKUs leaderboard).
-
+- **Physics-Based Sonner Toasts:** Modern, non-blocking stacked notifications for feedback, alerts, validation errors, and workflow confirmations.
 - **Corporate Enterprise Aesthetic:** Modern UI inspired directly by the royal/cyan blue active state indicators, uppercase metadata tags, rounded cards, responsive data tables).
 
 ---

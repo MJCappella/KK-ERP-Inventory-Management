@@ -11,8 +11,9 @@
                 <h1 class="page-title">Edit Product SKU</h1>
                 <p class="page-subtitle">Update product pricing, reorder thresholds and active status.</p>
             </div>
-            <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm">
-                &larr; Back to Catalog
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Catalog</span>
             </a>
         </div>
 
@@ -108,8 +109,9 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">
-                            <span>Update Product</span> &rarr;
+                        <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk text-xs"></i>
+                            <span>Update Product</span>
                         </button>
                     </div>
                 </div>

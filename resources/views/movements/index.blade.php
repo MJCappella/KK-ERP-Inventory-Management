@@ -12,11 +12,13 @@
             <p class="page-subtitle">Complete immutable double-entry history of all stock inflows, sales deductions, transfers, and adjustments.</p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('inventory.receive.form') }}" class="btn btn-secondary btn-sm">
-                + Inbound Receive
+            <a href="{{ route('inventory.receive.form') }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+                <span>Inbound Receive</span>
             </a>
-            <a href="{{ route('inventory.adjust.form') }}" class="btn btn-secondary btn-sm">
-                Adjust Count
+            <a href="{{ route('inventory.adjust.form') }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-xs"></i>
+                <span>Adjust Count</span>
             </a>
         </div>
     </div>

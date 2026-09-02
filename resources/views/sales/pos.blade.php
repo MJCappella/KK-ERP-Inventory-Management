@@ -41,11 +41,7 @@
                             <div class="relative">
                                 <input type="text" x-model="searchQuery"
                                     placeholder="Type product name, SKU or scan barcode..." class="form-input pl-9 text-xs">
-                                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                <i class="fa-solid fa-magnifying-glass text-slate-400 absolute left-3 top-3 text-xs"></i>
                             </div>
                         </div>
                         <div class="sm:col-span-5">
@@ -103,10 +99,7 @@
                     <div class="card-header bg-slate-50 flex items-center justify-between">
                         <div>
                             <h2 class="card-title text-sm flex items-center gap-2">
-                                <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
+                                <i class="fa-solid fa-cart-shopping text-sky-600 text-sm"></i>
                                 <span>Active Sale Cart (<span x-text="cart.length"></span> items)</span>
                             </h2>
                         </div>
@@ -122,11 +115,7 @@
                         <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
                             <template x-if="cart.length === 0">
                                 <div class="text-center py-8 text-slate-400">
-                                    <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                    </svg>
+                                    <i class="fa-solid fa-cart-arrow-down text-3xl mx-auto mb-2 text-slate-300 block"></i>
                                     <p class="text-xs">Cart is empty. Click items on the left to add.</p>
                                 </div>
                             </template>
@@ -235,10 +224,8 @@
                             <!-- Checkout Button -->
                             <button type="submit" :disabled="cart.length === 0 || isProcessing"
                                 class="w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 disabled:opacity-50 text-white font-bold text-sm shadow-md shadow-sky-600/30 transition-all flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
+                                <i class="fa-solid fa-check text-sm" x-show="!isProcessing"></i>
+                                <i class="fa-solid fa-spinner fa-spin text-sm" x-show="isProcessing"></i>
                                 <span x-text="isProcessing ? 'Processing Sale...' : 'Complete Sale & Deduct Stock'"></span>
                             </button>
                         </form>
@@ -297,7 +284,7 @@
                             if (existing.quantity < product.store_stock) {
                                 existing.quantity++;
                             } else {
-                                alert(`Cannot add more. Only ${product.store_stock} units available in this store.`);
+                                toast.warning('Stock Limit Reached', { description: `Only ${product.store_stock} units available in this store.` });
                             }
                         } else {
                             this.cart.push({
@@ -315,7 +302,7 @@
                         if (item.quantity < item.max_stock) {
                             item.quantity++;
                         } else {
-                            alert(`Max available stock is ${item.max_stock}`);
+                            toast.warning('Max Stock Reached', { description: `Only ${item.max_stock} units available in this store.` });
                         }
                     },
 
@@ -331,7 +318,7 @@
                     validateQty(index) {
                         const item = this.cart[index];
                         if (item.quantity > item.max_stock) {
-                            alert(`Adjusted to maximum available stock: ${item.max_stock}`);
+                            toast.info('Adjusted to Max Stock', { description: `Quantity capped to available stock: ${item.max_stock}` });
                             item.quantity = item.max_stock;
                         }
                         if (item.quantity < 1) {
@@ -346,6 +333,7 @@
                     clearCart() {
                         if (confirm('Clear all items from the cart?')) {
                             this.cart = [];
+                            toast.info('Cart cleared');
                         }
                     },
 
@@ -360,7 +348,7 @@
                     handleSubmit(event) {
                         if (this.cart.length === 0) {
                             event.preventDefault();
-                            alert('Cart is empty.');
+                            toast.error('Cart is Empty', { description: 'Please add at least one product before proceeding to checkout.' });
                             return;
                         }
                         this.isProcessing = true;

@@ -15,7 +15,10 @@
                 <h1 class="page-title">Edit User Account</h1>
                 <p class="page-subtitle">Update role assignment, operational scope or reset password.</p>
             </div>
-            <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm">&larr; Back to Users</a>
+            <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Users</span>
+            </a>
         </div>
 
         <div class="card">
@@ -96,14 +99,18 @@
                         @if($user->id !== auth()->id())
                             <button type="button"
                                 onclick="if(confirm('Are you sure you want to delete this user?')) document.getElementById('delete-user-form').submit();"
-                                class="btn btn-danger btn-sm">
-                                Delete User
+                                class="btn btn-danger btn-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                                <span>Delete User</span>
                             </button>
                         @endif
                     </div>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Update User</button>
+                        <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk text-xs"></i>
+                            <span>Update User</span>
+                        </button>
                     </div>
                 </div>
             </form>

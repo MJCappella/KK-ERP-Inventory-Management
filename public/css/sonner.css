@@ -1,0 +1,221 @@
+/* Sonner Toast Styles for KK Wholesalers */
+:root {
+  --sonner-toast-width: 356px;
+  --sonner-gap: 12px;
+  --sonner-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --sonner-bg: #ffffff;
+  --sonner-border: #e2e8f0;
+  --sonner-text: #0f172a;
+  --sonner-description: #64748b;
+  --sonner-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+.sonner-toaster {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999999;
+  width: var(--sonner-toast-width);
+  max-width: calc(100vw - 48px);
+  pointer-events: none;
+  font-family: var(--sonner-font);
+  box-sizing: border-box;
+}
+
+.sonner-toaster * {
+  box-sizing: border-box;
+}
+
+.sonner-toast-group {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sonner-toast {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  background: var(--sonner-bg);
+  color: var(--sonner-text);
+  border: 1px solid var(--sonner-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: var(--sonner-shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: auto;
+  user-select: none;
+  cursor: default;
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 300ms ease;
+  transform-origin: top center;
+}
+
+/* Stacking effect when not hovering toaster (cards stack downwards behind the frontmost toast) */
+.sonner-toast-group:not(:hover) .sonner-toast[data-index="0"] {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  z-index: 10;
+}
+
+.sonner-toast-group:not(:hover) .sonner-toast[data-index="1"] {
+  transform: translateY(12px) scale(0.94);
+  opacity: 0.9;
+  z-index: 9;
+}
+
+.sonner-toast-group:not(:hover) .sonner-toast[data-index="2"] {
+  transform: translateY(24px) scale(0.88);
+  opacity: 0.75;
+  z-index: 8;
+}
+
+.sonner-toast-group:not(:hover) .sonner-toast[data-index="3"],
+.sonner-toast-group:not(:hover) .sonner-toast[data-index="4"] {
+  transform: translateY(34px) scale(0.82);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 7;
+}
+
+/* Expanded state on hover - expand downwards smoothly */
+.sonner-toast-group:hover .sonner-toast {
+  transform: translateY(var(--expanded-offset)) scale(1) !important;
+  opacity: 1 !important;
+}
+
+/* Entering animation (slide in from top) */
+.sonner-toast[data-state="entering"] {
+  transform: translateY(-100%) scale(0.9);
+  opacity: 0;
+}
+
+/* Exiting animation (slide upwards & fade) */
+.sonner-toast[data-state="exiting"] {
+  transform: translateY(-20px) scale(0.92);
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+/* Toast Inner Content */
+.sonner-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.sonner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sonner-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.sonner-description {
+  font-size: 12px;
+  color: var(--sonner-description);
+  margin-top: 2px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Close Button */
+.sonner-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(241, 245, 249, 0.8);
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.sonner-toast:hover .sonner-close-btn {
+  opacity: 1;
+}
+
+.sonner-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Types */
+.sonner-toast[data-type="success"] {
+  border-color: #e2e8f0;
+}
+
+.sonner-toast[data-type="success"] .sonner-icon {
+  color: #10b981;
+}
+
+.sonner-toast[data-type="error"] {
+  border-color: #fecdd3;
+  background: #fff5f5;
+}
+
+.sonner-toast[data-type="error"] .sonner-icon {
+  color: #e11d48;
+}
+
+.sonner-toast[data-type="error"] .sonner-title {
+  color: #9f1239;
+}
+
+.sonner-toast[data-type="warning"] {
+  border-color: #fef08a;
+  background: #fefce8;
+}
+
+.sonner-toast[data-type="warning"] .sonner-icon {
+  color: #d97706;
+}
+
+.sonner-toast[data-type="warning"] .sonner-title {
+  color: #854d0e;
+}
+
+.sonner-toast[data-type="info"] {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.sonner-toast[data-type="info"] .sonner-icon {
+  color: #0284c7;
+}
+
+.sonner-toast[data-type="info"] .sonner-title {
+  color: #0369a1;
+}
+
+@media (max-width: 640px) {
+  .sonner-toaster {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}

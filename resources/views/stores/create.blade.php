@@ -9,7 +9,10 @@
                 <h1 class="page-title">Add Store Outlet</h1>
                 <p class="page-subtitle">Add a retail outlet or warehouse store assigned to a branch.</p>
             </div>
-            <a href="{{ route('branches.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
+            <a href="{{ route('branches.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back</span>
+            </a>
         </div>
 
         <div class="card">
@@ -55,7 +58,10 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('branches.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Store</button>
+                    <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Save Store</span>
+                    </button>
                 </div>
             </form>
         </div>

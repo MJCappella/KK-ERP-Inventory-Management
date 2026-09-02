@@ -11,8 +11,9 @@
                 <h1 class="page-title">Initiate Inter-Store Stock Transfer</h1>
                 <p class="page-subtitle">Move items from one store (Origin) to another (Destination)</p>
             </div>
-            <a href="{{ route('transfers.index') }}" class="btn btn-primary btn-sm">
-                &larr; Back to Transfers
+            <a href="{{ route('transfers.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Transfers</span>
             </a>
         </div>
 
@@ -67,8 +68,9 @@
             <div class="card">
                 <div class="card-header bg-slate-50 flex items-center justify-between">
                     <h2 class="card-title text-sm">2. Transfer Manifest & Items</h2>
-                    <button type="button" @click="addRow()" class="btn btn-secondary btn-sm">
-                        + Add Product Line
+                    <button type="button" @click="addRow()" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Add Product Line</span>
                     </button>
                 </div>
 
@@ -112,10 +114,7 @@
                                         <td class="py-3 text-center">
                                             <button type="button" @click="removeRow(idx)"
                                                 class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -140,8 +139,9 @@
                     </span>
                     <div class="flex items-center gap-3">
                         <a href="{{ route('transfers.index') }}" class="btn btn-secondary btn-sm">Cancel</a>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <span>Dispatch & Transfer</span> &rarr;
+                        <button type="submit" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                            <span>Dispatch & Transfer</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
@@ -177,7 +177,7 @@
                         if (this.rows.length > 1) {
                             this.rows.splice(index, 1);
                         } else {
-                            alert('Transfer must have at least one product line.');
+                            toast.warning('Minimum Requirement', { description: 'Transfer must have at least one product line.' });
                         }
                     },
 
@@ -213,7 +213,7 @@
                     handleSubmit(event) {
                         if (this.sourceStoreId === this.destStoreId) {
                             event.preventDefault();
-                            alert('Source and destination stores cannot be identical.');
+                            toast.error('Invalid Transfer Route', { description: 'Source and destination stores cannot be identical.' });
                             return;
                         }
 
@@ -221,12 +221,12 @@
                             const r = this.rows[i];
                             if (!r.product_id) {
                                 event.preventDefault();
-                                alert('Please select a product for every row.');
+                                toast.warning('Incomplete Item Line', { description: 'Please select a product for every row.' });
                                 return;
                             }
                             if (r.available_stock !== null && r.quantity > r.available_stock) {
                                 event.preventDefault();
-                                alert(`Row ${i + 1}: Requested quantity exceeds available stock (${r.available_stock}).`);
+                                toast.error('Insufficient Stock', { description: `Row ${i + 1}: Requested quantity exceeds available stock (${r.available_stock}).` });
                                 return;
                             }
                         }

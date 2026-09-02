@@ -9,7 +9,10 @@
                 <h1 class="page-title">Edit Branch</h1>
                 <p class="page-subtitle">Update regional branch details.</p>
             </div>
-            <a href="{{ route('branches.index') }}" class="btn btn-primary btn-sm">&larr; Back</a>
+            <a href="{{ route('branches.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back</span>
+            </a>
         </div>
 
         <div class="card">
@@ -43,7 +46,10 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('branches.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Update Branch</button>
+                    <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Update Branch</span>
+                    </button>
                 </div>
             </form>
         </div>

@@ -11,8 +11,9 @@
                 <h1 class="page-title">Add New Product SKU</h1>
                 <p class="page-subtitle">Define master product details, cost & selling pricing, and reorder levels.</p>
             </div>
-            <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm">
-                &larr; Back to Catalog
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Catalog</span>
             </a>
         </div>
 
@@ -94,7 +95,8 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
                         <span>Save Product SKU</span>
                     </button>
                 </div>

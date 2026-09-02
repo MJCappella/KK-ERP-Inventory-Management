@@ -14,17 +14,11 @@
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('sales.pos') }}" class="btn btn-primary shadow-sm shadow-sky-600/30">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
+                    <i class="fa-solid fa-plus text-xs"></i>
                     <span>Record New Sale (POS)</span>
                 </a>
                 <a href="{{ route('transfers.create') }}" class="btn btn-secondary">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
+                    <i class="fa-solid fa-right-left text-xs"></i>
                     <span>Inter-Store Transfer</span>
                 </a>
             </div>
@@ -42,10 +36,7 @@
                             class="text-slate-700">{{ $stats['totalSalesCount'] }}</strong> completed orders</p>
                 </div>
                 <div class="stat-icon bg-blue-50 text-sky-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <i class="fa-solid fa-money-bill-wave text-xl"></i>
                 </div>
             </div>
 
@@ -58,10 +49,7 @@
                             {{ number_format($stats['totalCostValue'], 2) }}</span></p>
                 </div>
                 <div class="stat-icon bg-emerald-50 text-emerald-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
+                    <i class="fa-solid fa-chart-line text-xl"></i>
                 </div>
             </div>
 
@@ -76,10 +64,7 @@
                     </p>
                 </div>
                 <div class="stat-icon bg-purple-50 text-purple-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
+                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
                 </div>
             </div>
 
@@ -95,10 +80,7 @@
                 </div>
                 <div
                     class="stat-icon {{ $stats['lowStockCount'] > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-600' }}">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
                 </div>
             </div>
 
@@ -233,10 +215,7 @@
                 <div class="card border-amber-200">
                     <div class="card-header bg-amber-50/50">
                         <div class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm"></i>
                             <h2 class="card-title text-amber-900 text-sm">Low Stock Alerts</h2>
                         </div>
                         <span class="badge bg-amber-100 text-amber-800 border-amber-200">{{ $stats['lowStockCount'] }} Needs

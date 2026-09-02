@@ -10,7 +10,10 @@
                 <h1 class="page-title">Create User Account</h1>
                 <p class="page-subtitle">Add a user and configure their operational role and store assignment.</p>
             </div>
-            <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm">&larr; Back to Users</a>
+            <a href="{{ route('users.index') }}" class="btn btn-primary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Users</span>
+            </a>
         </div>
 
         <div class="card">
@@ -83,7 +86,10 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus text-xs"></i>
+                        <span>Save User Account</span>
+                    </button>
                 </div>
             </form>
         </div>

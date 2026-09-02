@@ -11,8 +11,9 @@
                 <h1 class="page-title">Receive Inbound Stock</h1>
                 <p class="page-subtitle">Record supplier shipments, purchases, or warehouse intake into store inventory.</p>
             </div>
-            <a href="{{ route('inventory.index') }}" class="btn btn-secondary btn-sm">
-                &larr; Back to Inventory
+            <a href="{{ route('inventory.index') }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Inventory</span>
             </a>
         </div>
 
@@ -20,10 +21,7 @@
         <div class="card">
             <div class="card-header bg-emerald-50/50 border-emerald-100">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
+                    <i class="fa-solid fa-truck-ramp-box text-emerald-600 text-base"></i>
                     <h2 class="card-title text-sm text-emerald-900">Inbound Delivery Receipt</h2>
                 </div>
                 <span class="badge bg-emerald-100 text-emerald-800">Type: INBOUND</span>
@@ -71,10 +69,8 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('inventory.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-success shadow-md shadow-emerald-600/20">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                    <button type="submit" class="btn btn-success shadow-md shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-xs"></i>
                         <span>Confirm Receipt & Credit Stock</span>
                     </button>
                 </div>

@@ -21,20 +21,6 @@
             <p class="text-xs text-slate-500 mt-1">Enter your credentials below to access the ERP portal.</p>
         </div>
 
-        <!-- Feedback & Error Alerts -->
-        @if(session('info'))
-            <div class="mb-5 p-3 rounded-lg bg-sky-50 border border-sky-200 text-sky-800 text-xs">
-                {{ session('info') }}
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="mb-5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs">
-                @foreach($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
-            </div>
-        @endif
 
         <!-- Login Form -->
         <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
@@ -72,9 +58,7 @@
             <button type="submit"
                 class="w-full py-3 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm tracking-wide shadow-md shadow-sky-600/30 transition-all flex items-center justify-center gap-2 mt-2">
                 <span>Access ERP Portal</span>
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
         </form>
 

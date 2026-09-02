@@ -13,15 +13,13 @@
             </div>
             @if(auth()->user()->isAdmin())
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('branches.create') }}" class="btn btn-primary shadow-sm shadow-sky-600/30">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
+                    <a href="{{ route('branches.create') }}" class="btn btn-primary shadow-sm shadow-sky-600/30 flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus text-xs"></i>
                         <span>Add Branch</span>
                     </a>
-                    <a href="{{ route('stores.create') }}" class="btn btn-secondary">
-                        <span>+ Add Store</span>
+                    <a href="{{ route('stores.create') }}" class="btn btn-secondary flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Add Store</span>
                     </a>
                 </div>
             @endif
@@ -61,8 +59,9 @@
                                     class="font-bold text-slate-900 text-sm">{{ number_format($branch->total_stock_units) }}</span>
                             </div>
                             @if(auth()->user()->isAdmin())
-                                <a href="{{ route('branches.edit', $branch) }}" class="btn btn-secondary btn-sm">
-                                    Edit Branch
+                                <a href="{{ route('branches.edit', $branch) }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    <span>Edit Branch</span>
                                 </a>
                             @endif
                         </div>
@@ -102,12 +101,14 @@
                                     </div>
 
                                     <div class="mt-4 flex items-center gap-2">
-                                        <a href="{{ route('stores.show', $store) }}" class="btn btn-primary btn-sm flex-1">
-                                            View Inventory
+                                        <a href="{{ route('stores.show', $store) }}" class="btn btn-primary btn-sm flex-1 flex items-center justify-center gap-1.5">
+                                            <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                                            <span>View Inventory</span>
                                         </a>
                                         @if(auth()->user()->isAdmin())
-                                            <a href="{{ route('stores.edit', $store) }}" class="btn btn-secondary btn-sm">
-                                                Edit Store
+                                            <a href="{{ route('stores.edit', $store) }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                                <span>Edit</span>
                                             </a>
                                         @endif
                                     </div>

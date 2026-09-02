@@ -12,8 +12,9 @@
                 <p class="page-subtitle">Reconcile physical inventory counts, write off damaged items, or correct auditing
                     variances.</p>
             </div>
-            <a href="{{ route('inventory.index') }}" class="btn btn-secondary btn-sm">
-                &larr; Back to Inventory
+            <a href="{{ route('inventory.index') }}" class="btn btn-secondary btn-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Inventory</span>
             </a>
         </div>
 
@@ -21,10 +22,7 @@
         <div class="card">
             <div class="card-header bg-purple-50/50 border-purple-100">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
+                    <i class="fa-solid fa-sliders text-purple-600 text-base"></i>
                     <h2 class="card-title text-sm text-purple-900">Inventory Adjustment Log</h2>
                 </div>
                 <span class="badge bg-purple-100 text-purple-800">Type: ADJUSTMENT</span>
@@ -73,10 +71,8 @@
 
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
                     <a href="{{ route('inventory.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary shadow-md shadow-sky-600/20">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
+                    <button type="submit" class="btn btn-primary shadow-md shadow-sky-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-xs"></i>
                         <span>Apply Adjustment & Log Audit</span>
                     </button>
                 </div>

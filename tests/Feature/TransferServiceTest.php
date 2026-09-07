@@ -21,10 +21,15 @@ class TransferServiceTest extends TestCase
     use RefreshDatabase;
 
     protected Branch $branch;
+
     protected Store $sourceStore;
+
     protected Store $destStore;
+
     protected User $user;
+
     protected Product $product;
+
     protected TransferService $transferService;
 
     protected function setUp(): void

@@ -97,10 +97,11 @@ class User extends Authenticatable
         }
 
         if ($this->isBranchManager()) {
-            if (!$this->branch_id) {
+            if (! $this->branch_id) {
                 return false;
             }
             $storeObj = $store instanceof Store ? $store : Store::find($storeId);
+
             return $storeObj && $storeObj->branch_id === $this->branch_id;
         }
 

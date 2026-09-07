@@ -7,8 +7,6 @@ use App\Enums\StockMovementType;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Sale;
-use App\Models\SaleItem;
-use App\Models\StockMovement;
 use App\Models\Store;
 use App\Models\StoreStock;
 use App\Models\User;
@@ -22,10 +20,15 @@ class SaleServiceTest extends TestCase
     use RefreshDatabase;
 
     protected Branch $branch;
+
     protected Store $store;
+
     protected User $user;
+
     protected Product $product1;
+
     protected Product $product2;
+
     protected SaleService $saleService;
 
     protected function setUp(): void
@@ -94,7 +97,7 @@ class SaleServiceTest extends TestCase
 
         $this->assertInstanceOf(Sale::class, $sale);
         $this->assertStringStartsWith('INV-', $sale->invoice_number);
-        $this->assertEquals(11400.00, (float)$sale->total_amount);
+        $this->assertEquals(11400.00, (float) $sale->total_amount);
 
         // Check stock reduced from 15 to 12
         $stock = StoreStock::where('store_id', $this->store->id)
@@ -148,10 +151,10 @@ class SaleServiceTest extends TestCase
             taxAmount: 200
         );
 
-        $this->assertEquals(9000.00, (float)$sale->subtotal);
-        $this->assertEquals(500.00, (float)$sale->discount_amount);
-        $this->assertEquals(200.00, (float)$sale->tax_amount);
-        $this->assertEquals(8700.00, (float)$sale->total_amount); // 9000 + 200 - 500 = 8700
+        $this->assertEquals(9000.00, (float) $sale->subtotal);
+        $this->assertEquals(500.00, (float) $sale->discount_amount);
+        $this->assertEquals(200.00, (float) $sale->tax_amount);
+        $this->assertEquals(8700.00, (float) $sale->total_amount); // 9000 + 200 - 500 = 8700
     }
 
     public function test_prevents_sale_when_requested_quantity_exceeds_store_stock(): void

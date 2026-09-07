@@ -14,13 +14,21 @@ class RbacScopingTest extends TestCase
     use RefreshDatabase;
 
     protected Branch $branch1;
+
     protected Branch $branch2;
+
     protected Store $b1Store1;
+
     protected Store $b2Store1;
+
     protected Store $b2Store2;
+
     protected User $admin;
+
     protected User $bm1;
+
     protected User $bm2;
+
     protected User $sm1;
 
     protected function setUp(): void

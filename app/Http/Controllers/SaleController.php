@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Services\SaleService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SaleController extends Controller
 {
@@ -33,6 +34,7 @@ class SaleController extends Controller
             ->map(function ($product) use ($selectedStoreId) {
                 $stockObj = $product->storeStocks->firstWhere('store_id', $selectedStoreId);
                 $product->store_stock = $stockObj ? $stockObj->quantity : 0;
+
                 return $product;
             });
 
@@ -59,7 +61,13 @@ class SaleController extends Controller
 
         $store = Store::findOrFail($validated['store_id']);
 
-        if (!$user->canAccessStore($store)) {
+        if (! $user->canAccessStore($store)) {
+            Log::channel('security')->warning('[UNAUTHORIZED SALE ATTEMPT]', [
+                'user_id' => $user->id,
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'user_role' => $user->role->value ?? (string) $user->role,
+            ]);
             abort(403, 'Unauthorized to record sales for this store.');
         }
 
@@ -89,6 +97,14 @@ class SaleController extends Controller
             return redirect()->route('sales.show', $sale)
                 ->with('success', "Sale #{$sale->invoice_number} recorded successfully!");
         } catch (Exception $e) {
+            Log::error('[POS SALE CONTROLLER ERROR] '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'store_id' => $store->id,
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -140,7 +156,7 @@ class SaleController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->canAccessStore($sale->store_id)) {
+        if (! $user->canAccessStore($sale->store_id)) {
             abort(403, 'Unauthorized to view this sale.');
         }
 

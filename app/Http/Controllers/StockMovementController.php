@@ -42,10 +42,10 @@ class StockMovementController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('remarks', 'like', "%{$search}%")
-                  ->orWhereHas('product', function ($pq) use ($search) {
-                      $pq->where('name', 'like', "%{$search}%")
-                         ->orWhere('sku', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('product', function ($pq) use ($search) {
+                        $pq->where('name', 'like', "%{$search}%")
+                            ->orWhere('sku', 'like', "%{$search}%");
+                    });
             });
         }
 

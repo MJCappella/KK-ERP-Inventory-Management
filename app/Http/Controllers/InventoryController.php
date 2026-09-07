@@ -8,6 +8,7 @@ use App\Models\StoreStock;
 use App\Services\InventoryService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class InventoryController extends Controller
 {
@@ -31,9 +32,9 @@ class InventoryController extends Controller
             $search = $request->search;
             $query->whereHas('product', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%")
-                  ->orWhere('barcode', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
+                    ->orWhere('sku', 'like', "%{$search}%")
+                    ->orWhere('barcode', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
             });
         }
 
@@ -101,7 +102,13 @@ class InventoryController extends Controller
 
         $store = Store::findOrFail($validated['store_id']);
 
-        if (!$user->canAccessStore($store)) {
+        if (! $user->canAccessStore($store)) {
+            Log::channel('security')->warning('[UNAUTHORIZED RECEIVE ATTEMPT]', [
+                'user_id' => $user->id,
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'user_role' => $user->role->value ?? (string) $user->role,
+            ]);
             abort(403, 'Unauthorized to receive stock for this store.');
         }
 
@@ -117,6 +124,16 @@ class InventoryController extends Controller
             return redirect()->route('inventory.index', ['store_id' => $store->id])
                 ->with('success', "Received {$validated['quantity']} units of {$movement->product->name}. New balance: {$movement->balance_after}.");
         } catch (Exception $e) {
+            Log::error('[INVENTORY RECEIVE ERROR] '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'store_id' => $validated['store_id'],
+                'product_id' => $validated['product_id'],
+                'quantity' => $validated['quantity'],
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -146,7 +163,13 @@ class InventoryController extends Controller
 
         $store = Store::findOrFail($validated['store_id']);
 
-        if (!$user->canAccessStore($store)) {
+        if (! $user->canAccessStore($store)) {
+            Log::channel('security')->warning('[UNAUTHORIZED ADJUSTMENT ATTEMPT]', [
+                'user_id' => $user->id,
+                'store_id' => $store->id,
+                'store_name' => $store->name,
+                'user_role' => $user->role->value ?? (string) $user->role,
+            ]);
             abort(403, 'Unauthorized to adjust stock for this store.');
         }
 
@@ -162,6 +185,16 @@ class InventoryController extends Controller
             return redirect()->route('inventory.index', ['store_id' => $store->id])
                 ->with('success', "Stock adjusted for {$movement->product->name}. New balance: {$movement->balance_after}.");
         } catch (Exception $e) {
+            Log::error('[INVENTORY ADJUSTMENT ERROR] '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'store_id' => $validated['store_id'],
+                'product_id' => $validated['product_id'],
+                'new_quantity' => $validated['new_quantity'],
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             return back()->withInput()->with('error', $e->getMessage());
         }
     }

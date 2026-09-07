@@ -81,7 +81,7 @@ class Transfer extends Model
         if ($user->isStoreManager()) {
             return $query->where(function ($q) use ($user) {
                 $q->where('source_store_id', $user->store_id)
-                  ->orWhere('destination_store_id', $user->store_id);
+                    ->orWhere('destination_store_id', $user->store_id);
             });
         }
 

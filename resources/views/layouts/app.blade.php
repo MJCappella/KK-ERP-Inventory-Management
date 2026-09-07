@@ -219,53 +219,9 @@
                 <!-- Right Controls: 1-Click Role Switcher Demo Bar -->
                 <div class="flex items-center gap-3">
 
-                    <!-- Quick Role Switcher Dropdown (Essential for Trial Reviewers) -->
                     @php
                         $allDemoUsers = \App\Models\User::with(['branch', 'store'])->where('is_active', true)->get();
                     @endphp
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open"
-                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 text-xs font-semibold hover:bg-sky-100 transition-colors shadow-sm">
-                            <i class="fa-solid fa-arrows-rotate text-sky-600 text-xs"></i>
-                            <span>Demo Switch: <strong>{{ auth()->user()->role->label() }}</strong></span>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-sky-600 ml-1"></i>
-                        </button>
-
-                        <!-- Dropdown Menu -->
-                        <div x-show="open" @click.outside="open = false"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50">
-                            <div class="px-3 py-1.5 border-b border-slate-100">
-                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Quick Switch
-                                    Persona (Test RBAC)</p>
-                            </div>
-                            <div class="max-h-72 overflow-y-auto py-1">
-                                @foreach($allDemoUsers as $u)
-                                    <form method="POST" action="{{ route('switch-user', $u) }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="w-full text-left px-3 py-2 text-xs hover:bg-slate-50 flex items-center justify-between {{ $u->id === auth()->id() ? 'bg-sky-50 font-bold text-sky-800' : 'text-slate-700' }}">
-                                            <div>
-                                                <div class="font-medium text-slate-900">{{ $u->name }}</div>
-                                                <div class="text-[10px] text-slate-500">
-                                                    {{ $u->role->label() }}
-                                                    {{ $u->store ? '· ' . $u->store->name : ($u->branch ? '· ' . $u->branch->name : '· Global') }}
-                                                </div>
-                                            </div>
-                                            @if($u->id === auth()->id())
-                                                <span class="text-sky-600 text-xs">● Active</span>
-                                            @endif
-                                        </button>
-                                    </form>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- User Profile & Logout -->
                     <div class="flex items-center gap-2 pl-2 border-l border-slate-200">

@@ -56,7 +56,7 @@ class Sale extends Model
             ->where('reference_type', self::class);
     }
 
-    //scoped to specific users
+    // scoped to specific users
     public function scopeAccessibleBy($query, User $user)
     {
         if ($user->isAdmin()) {

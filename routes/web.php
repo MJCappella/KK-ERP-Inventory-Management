@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 });
 
-//Role Switcher
+// Role Switcher
 Route::post('/switch-user/{user}', [AuthController::class, 'switchUser'])->name('switch-user');
 
 // Authenticated ERP Routes
@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Default redirect to dashboard
-    Route::get('/', fn() => redirect()->route('dashboard'));
+    Route::get('/', fn () => redirect()->route('dashboard'));
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // POS & Sales

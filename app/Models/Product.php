@@ -63,6 +63,7 @@ class Product extends Model
         if ($this->cost_price <= 0) {
             return 0.0;
         }
+
         return round((($this->selling_price - $this->cost_price) / $this->cost_price) * 100, 1);
     }
 
@@ -70,6 +71,7 @@ class Product extends Model
     {
         if ($storeId) {
             $qty = (int) ($this->storeStocks()->where('store_id', $storeId)->value('quantity') ?? 0);
+
             return $qty <= $this->reorder_level;
         }
 

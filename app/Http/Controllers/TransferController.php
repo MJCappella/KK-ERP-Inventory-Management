@@ -8,6 +8,7 @@ use App\Models\Transfer;
 use App\Services\TransferService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TransferController extends Controller
 {
@@ -71,7 +72,13 @@ class TransferController extends Controller
 
         $sourceStore = Store::findOrFail($validated['source_store_id']);
 
-        if (!$user->canAccessStore($sourceStore)) {
+        if (! $user->canAccessStore($sourceStore)) {
+            Log::channel('security')->warning('[UNAUTHORIZED TRANSFER ATTEMPT]', [
+                'user_id' => $user->id,
+                'source_store_id' => $sourceStore->id,
+                'source_store_name' => $sourceStore->name,
+                'user_role' => $user->role->value ?? (string) $user->role,
+            ]);
             abort(403, 'Unauthorized to initiate transfers from this source store.');
         }
 
@@ -87,6 +94,15 @@ class TransferController extends Controller
             return redirect()->route('transfers.show', $transfer)
                 ->with('success', "Transfer #{$transfer->transfer_number} completed successfully!");
         } catch (Exception $e) {
+            Log::error('[TRANSFER CONTROLLER ERROR] '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'source_store_id' => $validated['source_store_id'],
+                'destination_store_id' => $validated['destination_store_id'],
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -95,10 +111,10 @@ class TransferController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $canAccessSource = $user->canAccessStore($transfer->source_store_id);
             $canAccessDest = $user->canAccessStore($transfer->destination_store_id);
-            if (!$canAccessSource && !$canAccessDest) {
+            if (! $canAccessSource && ! $canAccessDest) {
                 abort(403, 'Unauthorized to view this transfer.');
             }
         }

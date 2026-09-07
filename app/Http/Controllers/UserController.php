@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 // user management controller - scoped to admin only
@@ -15,7 +16,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403, 'Only administrators can manage users.');
         }
 
@@ -28,7 +29,7 @@ class UserController extends Controller
 
     public function create()
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403, 'Only administrators can create users.');
         }
 
@@ -41,7 +42,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             abort(403, 'Only administrators can create users.');
         }
 
@@ -55,7 +56,7 @@ class UserController extends Controller
             'store_id' => 'nullable|required_if:role,store_manager|exists:stores,id',
         ]);
 
-        if ($validated['role'] === 'store_manager' && !empty($validated['store_id'])) {
+        if ($validated['role'] === 'store_manager' && ! empty($validated['store_id'])) {
             $store = Store::find($validated['store_id']);
             $validated['branch_id'] = $store?->branch_id;
         }
@@ -64,12 +65,26 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
+        Log::channel('operations')->info('[USER CREATED]', [
+            'created_user_id' => $user->id,
+            'email' => $user->email,
+            'role' => $user->role->value ?? (string) $user->role,
+            'store_id' => $user->store_id,
+            'branch_id' => $user->branch_id,
+            'created_by' => auth()->id(),
+        ]);
+
         return redirect()->route('users.index')->with('success', "User '{$user->name}' created successfully.");
     }
 
     public function edit(User $user)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
+            Log::channel('security')->warning('[UNAUTHORIZED USER EDIT ATTEMPT]', [
+                'user_id' => auth()->id(),
+                'target_user_id' => $user->id,
+                'role' => auth()->user()->role->value ?? (string) auth()->user()->role,
+            ]);
             abort(403, 'Only administrators can edit users.');
         }
 
@@ -82,13 +97,18 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
+            Log::channel('security')->warning('[UNAUTHORIZED USER UPDATE ATTEMPT]', [
+                'user_id' => auth()->id(),
+                'target_user_id' => $user->id,
+                'role' => auth()->user()->role->value ?? (string) auth()->user()->role,
+            ]);
             abort(403, 'Only administrators can edit users.');
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'phone' => 'nullable|string|max:50',
             'password' => ['nullable', Password::defaults()],
             'role' => 'required|string|in:admin,branch_manager,store_manager',
@@ -97,13 +117,13 @@ class UserController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
 
-        if ($validated['role'] === 'store_manager' && !empty($validated['store_id'])) {
+        if ($validated['role'] === 'store_manager' && ! empty($validated['store_id'])) {
             $store = Store::find($validated['store_id']);
             $validated['branch_id'] = $store?->branch_id;
         } elseif ($validated['role'] === 'branch_manager') {
@@ -115,20 +135,46 @@ class UserController extends Controller
 
         $user->update($validated);
 
+        Log::channel('operations')->info('[USER UPDATED]', [
+            'updated_user_id' => $user->id,
+            'email' => $user->email,
+            'role' => $user->role->value ?? (string) $user->role,
+            'updated_by' => auth()->id(),
+            'changes' => array_keys($request->except(['password', '_token'])),
+        ]);
+
         return redirect()->route('users.index')->with('success', "User '{$user->name}' updated successfully.");
     }
 
     public function destroy(User $user)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
+            Log::channel('security')->warning('[UNAUTHORIZED USER DELETION ATTEMPT]', [
+                'user_id' => auth()->id(),
+                'target_user_id' => $user->id,
+                'role' => auth()->user()->role->value ?? (string) auth()->user()->role,
+            ]);
             abort(403, 'Only administrators can delete users.');
         }
 
         if ($user->id === auth()->id()) {
+            Log::channel('security')->warning('[USER DELETION REJECTED] Self-deletion attempt', [
+                'user_id' => auth()->id(),
+            ]);
+
             return back()->with('error', 'You cannot delete your own account.');
         }
 
+        $deletedUserId = $user->id;
+        $deletedEmail = $user->email;
         $user->delete();
+
+        Log::channel('operations')->info('[USER DELETED]', [
+            'deleted_user_id' => $deletedUserId,
+            'email' => $deletedEmail,
+            'deleted_by' => auth()->id(),
+        ]);
+
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

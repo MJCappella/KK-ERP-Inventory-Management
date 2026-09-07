@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Enums\Role;
-use App\Enums\StockMovementType;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Sale;
@@ -19,15 +18,25 @@ class E2EWorkflowTest extends TestCase
     use RefreshDatabase;
 
     protected Branch $branch1;
+
     protected Branch $branch2;
+
     protected Store $store1;
+
     protected Store $store2;
+
     protected Store $store3;
+
     protected User $admin;
+
     protected User $bm1;
+
     protected User $sm1;
+
     protected User $sm2;
+
     protected Product $rice;
+
     protected Product $sugar;
 
     protected function setUp(): void
@@ -124,7 +133,7 @@ class E2EWorkflowTest extends TestCase
 
         $sale = Sale::latest()->first();
         $this->assertNotNull($sale);
-        $this->assertEquals(15500.00, (float)$sale->total_amount);
+        $this->assertEquals(15500.00, (float) $sale->total_amount);
         $response->assertRedirect(route('sales.show', $sale));
 
         // Check stock reduced from 50 to 45

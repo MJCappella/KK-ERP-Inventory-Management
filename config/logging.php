@@ -73,6 +73,38 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'audit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/audit.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 30),
+            'replace_placeholders' => true,
+        ],
+
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 30),
+            'replace_placeholders' => true,
+        ],
+
+        'operations' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/operations.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
+        'queries' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/queries.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => env('LOG_DAILY_DAYS', 7),
+            'replace_placeholders' => true,
+        ],
+
         'monthly' => [
             'driver' => 'monthly',
             'path' => storage_path('logs/laravel.log'),

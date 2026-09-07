@@ -6,7 +6,6 @@ use App\Enums\Role;
 use App\Enums\StockMovementType;
 use App\Models\Branch;
 use App\Models\Product;
-use App\Models\StockMovement;
 use App\Models\Store;
 use App\Models\StoreStock;
 use App\Models\User;
@@ -20,9 +19,13 @@ class InventoryServiceTest extends TestCase
     use RefreshDatabase;
 
     protected Branch $branch;
+
     protected Store $store;
+
     protected User $user;
+
     protected Product $product;
+
     protected InventoryService $service;
 
     protected function setUp(): void

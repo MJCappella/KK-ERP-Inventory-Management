@@ -6,7 +6,6 @@ use App\Enums\Role;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Store;
-use App\Models\StoreStock;
 use App\Models\User;
 use App\Services\InventoryService;
 use App\Services\SaleService;
@@ -188,7 +187,7 @@ class DatabaseSeeder extends Seeder
                 'selling_price' => 1350.00,
                 'reorder_level' => 25,
                 'description' => 'UHT homogenized whole cow milk in tamper-evident Tetra Pak.',
-            ]
+            ],
         ];
 
         $createdProducts = [];
@@ -203,7 +202,7 @@ class DatabaseSeeder extends Seeder
             1 => [$store1->id => 80, $store2->id => 25, $store3->id => 140],
             2 => [$store1->id => 90, $store2->id => 35, $store3->id => 110],
             3 => [$store1->id => 150, $store2->id => 60, $store3->id => 200],
-            4 => [$store1->id => 110, $store2->id => 50, $store3->id => 160]
+            4 => [$store1->id => 110, $store2->id => 50, $store3->id => 160],
         ];
 
         foreach ($createdProducts as $index => $product) {

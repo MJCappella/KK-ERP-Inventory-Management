@@ -13,9 +13,10 @@ A robust, multi-branch, multi-store Wholesale & Retail Inventory Management Syst
 5. [Docker Setup Instructions](#docker-setup-instructions)
 6. [Local Environment Setup (Alternative)](#local-environment-setup-alternative)
 7. [Pre-Configured Demo Accounts](#pre-configured-demo-accounts)
-8. [Automated Test Suite](#automated-test-suite)
-9. [Assumptions Made](#assumptions-made)
-10. [Known Limitations](#known-limitations)
+8. [Monitoring & Observability (Grafana + Loki)](#monitoring--observability-grafana--loki)
+9. [Automated Test Suite](#automated-test-suite)
+10. [Assumptions Made](#assumptions-made)
+11. [Known Limitations](#known-limitations)
 
 ---
 
@@ -79,7 +80,7 @@ KK Wholesalers Network
 
 ## Docker Setup Instructions
 
-The repository includes a complete Docker configuration featuring PHP 8.3 FPM, Nginx, MySQL 8.0, and phpMyAdmin.
+The repository includes a complete Docker configuration featuring PHP 8.4 FPM, Nginx, MySQL 8.0, phpMyAdmin, Grafana, Loki, and Promtail.
 
 ### 1. Prerequisites
 - Docker Engine & Docker Compose (v2.0+) installed and running.
@@ -108,6 +109,11 @@ docker compose exec app php artisan migrate:fresh --seed
   - Server: `db`
   - Username: `kk_user`
   - Password: `secret`
+- **Grafana Monitoring & Observability:** [http://localhost:3000](http://localhost:3000)
+  - Username: `admin`
+  - Password: `admin`
+  - Pre-configured dashboard: **KK Wholesalers ERP — Observability Dashboard**
+- **Loki Log Ingestion Service:** [http://localhost:3100](http://localhost:3100)
 - **MySQL Direct Port:** `localhost:3306`
 
 ---
@@ -146,6 +152,70 @@ All seeded accounts share the default password: **`password123`**
 | **Store 1 Manager** | Peter Ochieng | `store1manager@kkwholesalers.com` | Store 1 (Superior Center) |
 | **Store 2 Manager** | Amina Salim | `store2manager@kkwholesalers.com` | Store 2 (Mega City) |
 | **Store 3 Manager** | David Kiprono | `store3manager@kkwholesalers.com` | Store 3 (Lake Side Distributors) |
+
+---
+
+## Monitoring & Observability (Grafana + Loki)
+
+KK-ERP is instrumented with aggressive, multi-channel structured logging and an automated **Loki + Promtail + Grafana** telemetry stack.
+
+### Architecture Overview
+
+```
+[ Laravel App ]
+       │ Writes multi-channel daily logs
+       ▼
+ [ storage/logs/ ]
+   ├── audit-YYYY-MM-DD.log       (Stock mutations, sales, transfers, count adjustments)
+   ├── security-YYYY-MM-DD.log    (Logins, failed attempts, logouts, persona switches, 403s)
+   ├── operations-YYYY-MM-DD.log  (Product, store, branch, and user CRUD)
+   ├── queries-YYYY-MM-DD.log     (Slow database queries > 100ms)
+   └── laravel-YYYY-MM-DD.log     (Uncaught exceptions, HTTP request/response metrics)
+       │
+       ▼ (read-only mount)
+ [ Promtail Log Collector ]
+       │ - Multiline parsing (preserves stack traces)
+       │ - Dynamic channel extraction from filenames
+       │ - Regex extraction of severity levels & timestamps
+       ▼ (HTTP push)
+ [ Loki 3.0 Storage ]
+       │ Indexed TSDB store with 14-day retention
+       ▼
+ [ Grafana ]
+       Auto-provisions Loki datasource & "KK Wholesalers ERP — Observability Dashboard"
+```
+
+### Pre-Configured Dashboard Features
+
+Navigate to [http://localhost:3000](http://localhost:3000) (User: `admin` / Password: `admin`):
+
+1. **Error & Health Counters:** Real-time stat panels displaying total application errors, security incidents, stock ledger movements, and slow database queries.
+2. **Log Events by Severity Level:** Stacked time-series graph categorizing log volume into `ERROR`, `WARNING`, `INFO`, and `DEBUG`.
+3. **Log Rate by Channel:** Real-time throughput (lines/sec) across `audit`, `security`, `operations`, `queries`, and `laravel`.
+4. **Dedicated Security Log Stream:** Live feed tracking user authentications, credential failures, unauthorized role access (`403 Forbidden`), and persona switches.
+5. **Stock Ledger & POS Audit Stream:** Live feed tracking inventory events with product IDs, store IDs, user attribution, and quantity deltas.
+6. **Unified Live Explorer:** Interactive filterable log stream supporting channel selection, severity selection, and full-text keyword search.
+
+### Useful LogQL Query Examples
+
+- **All Application Errors:**
+  ```logql
+  {job="kk_erp", level="ERROR"}
+  ```
+- **Failed Login Attempts:**
+  ```logql
+  {job="kk_erp", channel="security"} |= "Failed login attempt"
+  ```
+- **Slow Database Queries (>100ms):**
+  ```logql
+  {job="kk_erp", channel="queries"}
+  ```
+- **Stock Movement Audit Trail for a Specific Product:**
+  ```logql
+  {job="kk_erp", channel="audit"} |= "product_id"
+  ```
+
+---
 
 ## Automated Test Suite
 

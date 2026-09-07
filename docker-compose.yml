@@ -72,10 +72,60 @@ services:
     networks:
       - kk_network
 
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: kk_erp_loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    volumes:
+      - ./docker/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
+      - kk_lokidata:/loki
+    networks:
+      - kk_network
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: kk_erp_promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    volumes:
+      - ./docker/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
+      - ./storage/logs:/var/log/laravel:ro
+    depends_on:
+      - loki
+    networks:
+      - kk_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kk_erp_grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - kk_grafanadata:/var/lib/grafana
+      - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./docker/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./docker/grafana/dashboards:/etc/grafana/dashboards:ro
+    depends_on:
+      - loki
+    networks:
+      - kk_network
+
 networks:
   kk_network:
     driver: bridge
 
 volumes:
   kk_dbdata:
+    driver: local
+  kk_lokidata:
+    driver: local
+  kk_grafanadata:
     driver: local

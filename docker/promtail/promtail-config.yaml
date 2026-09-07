@@ -1,0 +1,36 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: kk_erp_logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: kk_erp
+          app: kk-erp
+          __path__: /var/log/laravel/*.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\]'
+          max_wait_time: 3s
+      - regex:
+          source: filename
+          expression: '/var/log/laravel/(?P<channel>[a-zA-Z0-9_]+)(?:-\\d{4}-\\d{2}-\\d{2})?\\.log$'
+      - labels:
+          channel:
+      - regex:
+          expression: '^\\[(?P<log_time>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\] (?P<environment>\\w+)\\.(?P<level>[A-Z]+): (?P<message>.*)'
+      - labels:
+          level:
+          environment:
+      - timestamp:
+          source: log_time
+          format: '2006-01-02 15:04:05'

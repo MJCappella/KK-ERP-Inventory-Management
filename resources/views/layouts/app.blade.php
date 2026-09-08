@@ -42,7 +42,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -80,7 +82,8 @@
                     </div>
                     <a href="{{ route('dashboard') }}"
                         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                        <i class="fa-solid fa-gauge-high w-5 text-center text-sm {{ request()->routeIs('dashboard') ? 'text-white' : 'text-slate-500' }}"></i>
+                        <i
+                            class="fa-solid fa-gauge-high w-5 text-center text-sm {{ request()->routeIs('dashboard') ? 'text-white' : 'text-slate-500' }}"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
@@ -93,19 +96,22 @@
                     <div class="space-y-0.5">
                         <a href="{{ route('sales.pos') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('sales.pos') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-cash-register w-5 text-center text-sm {{ request()->routeIs('sales.pos') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-cash-register w-5 text-center text-sm {{ request()->routeIs('sales.pos') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Point of Sale (POS)</span>
                         </a>
 
                         <a href="{{ route('sales.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('sales.index') || request()->routeIs('sales.show') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-sm {{ request()->routeIs('sales.index') || request()->routeIs('sales.show') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-file-invoice-dollar w-5 text-center text-sm {{ request()->routeIs('sales.index') || request()->routeIs('sales.show') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Sales & Invoices</span>
                         </a>
 
                         <a href="{{ route('transfers.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('transfers.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-right-left w-5 text-center text-sm {{ request()->routeIs('transfers.*') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-right-left w-5 text-center text-sm {{ request()->routeIs('transfers.*') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Inter-Store Transfers</span>
                         </a>
                     </div>
@@ -119,25 +125,29 @@
                     <div class="space-y-0.5">
                         <a href="{{ route('inventory.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('inventory.index') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-boxes-stacked w-5 text-center text-sm {{ request()->routeIs('inventory.index') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-boxes-stacked w-5 text-center text-sm {{ request()->routeIs('inventory.index') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Store Stocks</span>
                         </a>
 
                         <a href="{{ route('inventory.receive.form') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('inventory.receive.form') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-truck-ramp-box w-5 text-center text-sm {{ request()->routeIs('inventory.receive.form') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-truck-ramp-box w-5 text-center text-sm {{ request()->routeIs('inventory.receive.form') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Receive Inbound Stock</span>
                         </a>
 
                         <a href="{{ route('inventory.adjust.form') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('inventory.adjust.form') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-sliders w-5 text-center text-sm {{ request()->routeIs('inventory.adjust.form') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-sliders w-5 text-center text-sm {{ request()->routeIs('inventory.adjust.form') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Stock Adjustments</span>
                         </a>
 
                         <a href="{{ route('movements.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('movements.index') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-clock-rotate-left w-5 text-center text-sm {{ request()->routeIs('movements.index') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-clock-rotate-left w-5 text-center text-sm {{ request()->routeIs('movements.index') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Audit Ledger (Movements)</span>
                         </a>
                     </div>
@@ -151,13 +161,15 @@
                     <div class="space-y-0.5">
                         <a href="{{ route('products.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('products.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-tags w-5 text-center text-sm {{ request()->routeIs('products.*') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-tags w-5 text-center text-sm {{ request()->routeIs('products.*') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Products Catalog</span>
                         </a>
 
                         <a href="{{ route('branches.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('branches.*') || request()->routeIs('stores.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-network-wired w-5 text-center text-sm {{ request()->routeIs('branches.*') || request()->routeIs('stores.*') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-network-wired w-5 text-center text-sm {{ request()->routeIs('branches.*') || request()->routeIs('stores.*') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>Branches & Stores</span>
                         </a>
                     </div>
@@ -171,7 +183,8 @@
                         </div>
                         <a href="{{ route('users.index') }}"
                             class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('users.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i class="fa-solid fa-users-gear w-5 text-center text-sm {{ request()->routeIs('users.*') ? 'text-white' : 'text-slate-500' }}"></i>
+                            <i
+                                class="fa-solid fa-users-gear w-5 text-center text-sm {{ request()->routeIs('users.*') ? 'text-white' : 'text-slate-500' }}"></i>
                             <span>User Accounts & RBAC</span>
                         </a>
                     </div>
@@ -216,25 +229,6 @@
                     </div>
                 </div>
 
-                <!-- Right Controls: 1-Click Role Switcher Demo Bar -->
-                <div class="flex items-center gap-3">
-
-                    @php
-                        $allDemoUsers = \App\Models\User::with(['branch', 'store'])->where('is_active', true)->get();
-                    @endphp
-
-                    <!-- User Profile & Logout -->
-                    <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" title="Logout"
-                                class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                                <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
             </header>
 
             <!-- Page Body Container -->

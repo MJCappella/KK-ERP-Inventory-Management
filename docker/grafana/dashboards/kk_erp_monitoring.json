@@ -36,7 +36,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -88,7 +88,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({job=\"kk_erp\", level=\"ERROR\"}[$__range]))",
@@ -103,7 +103,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -151,7 +151,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({job=\"kk_erp\", channel=\"security\"}[$__range]))",
@@ -166,7 +166,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -214,7 +214,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({job=\"kk_erp\", channel=\"audit\"}[$__range]))",
@@ -229,7 +229,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -281,7 +281,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum(count_over_time({job=\"kk_erp\", channel=\"queries\"}[$__range]))",
@@ -308,7 +308,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -407,7 +407,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum by (level) (count_over_time({job=\"kk_erp\"}[$__interval]))",
@@ -422,7 +422,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "fieldConfig": {
         "defaults": {
@@ -458,7 +458,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "sum by (channel) (rate({job=\"kk_erp\"}[$__interval]))",
@@ -485,7 +485,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "gridPos": {
         "h": 10,
@@ -509,7 +509,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "{job=\"kk_erp\", channel=\"security\"}",
@@ -523,7 +523,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "gridPos": {
         "h": 10,
@@ -547,7 +547,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "{job=\"kk_erp\", channel=\"audit\"}",
@@ -573,7 +573,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "Loki"
+        "uid": "P8E80F9AEF21F6940"
       },
       "gridPos": {
         "h": 14,
@@ -597,7 +597,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "Loki"
+            "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "code",
           "expr": "{job=\"kk_erp\", channel=~\"$channel\", level=~\"$level\"} |= \"$search\"",
@@ -621,6 +621,7 @@
   "templating": {
     "list": [
       {
+        "allValue": ".*",
         "current": {
           "selected": true,
           "text": "All",
@@ -628,7 +629,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "Loki"
+          "uid": "P8E80F9AEF21F6940"
         },
         "definition": "label_values(channel)",
         "hide": 0,
@@ -650,6 +651,7 @@
         "type": "query"
       },
       {
+        "allValue": ".*",
         "current": {
           "selected": true,
           "text": "All",
@@ -657,7 +659,7 @@
         },
         "datasource": {
           "type": "loki",
-          "uid": "Loki"
+          "uid": "P8E80F9AEF21F6940"
         },
         "definition": "label_values(level)",
         "hide": 0,
@@ -701,7 +703,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -716,6 +718,6 @@
   "timezone": "browser",
   "title": "KK Wholesalers ERP — Observability Dashboard",
   "uid": "kk-erp-observability",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

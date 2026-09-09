@@ -36,6 +36,10 @@ schema_config:
 limits_config:
   retention_period: 336h
   allow_structured_metadata: true
+  volume_enabled: true
+  reject_old_samples: false
+  creation_grace_period: 10m
+  max_entries_limit_per_query: 5000
 
 compactor:
   working_directory: /loki/compactor

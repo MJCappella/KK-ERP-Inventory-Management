@@ -181,12 +181,20 @@
                         <div class="text-[11px] font-bold tracking-wider text-slate-600 uppercase px-3 mb-1">
                             System
                         </div>
-                        <a href="{{ route('users.index') }}"
-                            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('users.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                            <i
-                                class="fa-solid fa-users-gear w-5 text-center text-sm {{ request()->routeIs('users.*') ? 'text-white' : 'text-slate-500' }}"></i>
-                            <span>User Accounts & RBAC</span>
-                        </a>
+                        <div class="space-y-0.5">
+                            <a href="{{ route('users.index') }}"
+                                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('users.*') ? 'bg-sky-600 text-white font-semibold shadow-sm shadow-sky-600/30' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                <i
+                                    class="fa-solid fa-users-gear w-5 text-center text-sm {{ request()->routeIs('users.*') ? 'text-white' : 'text-slate-500' }}"></i>
+                                <span>User Accounts & RBAC</span>
+                            </a>
+                            <a href="{{ route('docs.index') }}" target="_blank"
+                                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                                <i class="fa-solid fa-book-bookmark w-5 text-center text-sm text-slate-500"></i>
+                                <span>Swagger API Docs</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-400 ml-auto"></i>
+                            </a>
+                        </div>
                     </div>
                 @endif
 

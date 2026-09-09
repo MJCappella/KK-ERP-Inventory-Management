@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocsController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
@@ -11,6 +12,11 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+// Swagger & OpenAPI Route Documentation
+Route::get('/docs', [DocsController::class, 'index'])->name('docs.index');
+Route::get('/docs/openapi.yaml', [DocsController::class, 'spec'])->name('docs.spec');
+Route::get('/api/documentation', fn () => redirect()->route('docs.index'));
 
 // Guest Authentication Routes
 Route::middleware('guest')->group(function () {

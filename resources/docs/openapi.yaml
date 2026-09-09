@@ -1,0 +1,1070 @@
+openapi: 3.0.3
+info:
+  title: KK Wholesalers ERP — Route & API Documentation
+  version: 1.0.0
+  description: |
+    Comprehensive route and API documentation for **KK Wholesalers Monolithic ERP & Inventory Management System**.
+    
+    ### Key Highlights
+    - **Concurrency-Safe Stock Ledger**: Pessimistic database locking (`lockForUpdate`) on `store_stocks` and immutable double-entry `stock_movements`.
+    - **Role-Based Access Control (RBAC)**: Administrator, Branch Manager, and Store Manager scopes.
+    - **POS Checkout & Invoicing**: Real-time stock validation, multi-item checkout, sequential invoice numbering (`INV-YYYYMMDD-XXXX`).
+    - **Inter-Store Transfers**: Origin store balance deduction and destination store balance addition with dispatch transfer notes (`TRF-XXXXXXXX`).
+    - **Monitoring & Observability**: Multi-channel daily structured logging integrated with Grafana, Loki, and Promtail.
+servers:
+  - url: http://localhost:8000
+    description: Local Development Server (Artisan)
+  - url: http://localhost:9000
+    description: Docker Nginx Web Gateway
+tags:
+  - name: Authentication & Session
+    description: User authentication, session management, and demo persona switching
+  - name: Executive Dashboard
+    description: High-level KPIs, sales revenue, inventory valuation, and branch leaderboards
+  - name: Point of Sale (POS) & Sales
+    description: Interactive POS checkout, order submission, and invoice history
+  - name: Inventory Management
+    description: Store stocks, supplier inbound receipts, and stock count reconciliation
+  - name: Inter-Store Transfers
+    description: Store-to-store stock transfers dispatch and transit tracking
+  - name: Stock Movement Audit Ledger
+    description: Immutable double-entry stock ledger tracking all balance mutations
+  - name: Products Catalog
+    description: Master SKU catalog, categories, pricing, and unit barcodes
+  - name: Branches & Stores
+    description: Organizational hierarchy, regional branches, and store outlets
+  - name: User Management & RBAC
+    description: User accounts, role assignments, and store scoping (Admin only)
+paths:
+  /login:
+    get:
+      tags:
+        - Authentication & Session
+      summary: Display Login Page
+      description: Returns the Blade login view. Redirects to `/dashboard` if already authenticated.
+      responses:
+        '200':
+          description: Login form rendered successfully
+        '302':
+          description: Authenticated user redirected to dashboard
+    post:
+      tags:
+        - Authentication & Session
+      summary: Authenticate User
+      description: Validates user credentials, authenticates session, regenerates CSRF token, and logs authentication events.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@kkwholesalers.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                remember:
+                  type: boolean
+                  example: false
+      responses:
+        '302':
+          description: Successful authentication redirecting to `/dashboard`
+        '422':
+          description: Invalid credentials or validation failure
+
+  /logout:
+    post:
+      tags:
+        - Authentication & Session
+      summary: Logout User
+      description: Invalidates active session, regenerates CSRF token, and logs security audit.
+      security:
+        - sessionAuth: []
+      responses:
+        '302':
+          description: Redirect to `/login`
+
+  /switch-user/{user}:
+    post:
+      tags:
+        - Authentication & Session
+      summary: 1-Click Demo Persona Switcher
+      description: Instantly switches the authenticated session to another demo user account for testing RBAC scopes.
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: ID of user to switch to
+          schema:
+            type: integer
+            example: 2
+      responses:
+        '302':
+          description: Session switched, redirect to previous page or `/dashboard`
+        '404':
+          description: User ID not found
+
+  /dashboard:
+    get:
+      tags:
+        - Executive Dashboard
+      summary: View Executive Dashboard
+      description: Returns sales metrics, total retail/cost stock valuation, low-stock warnings, and store leaderboards scoped to user's permissions.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Dashboard metrics rendered successfully
+        '302':
+          description: Unauthenticated redirect to `/login`
+
+  /sales/pos:
+    get:
+      tags:
+        - Point of Sale (POS) & Sales
+      summary: Interactive POS Checkout Terminal
+      description: Terminal interface for scanning/selecting products, building carts, and executing sales transactions.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: POS view rendered successfully
+
+  /sales:
+    get:
+      tags:
+        - Point of Sale (POS) & Sales
+      summary: List Sales Transactions & Invoices
+      description: Paginated historical list of completed sales with filter parameters.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store_id
+          in: query
+          description: Filter by store ID
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Search by invoice number or customer name
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Sales list rendered successfully
+    post:
+      tags:
+        - Point of Sale (POS) & Sales
+      summary: Complete POS Sale Checkout
+      description: Atomically checks stock with row-level pessimistic locks, creates Sale and SaleItem records, deducts inventory with double-entry stock movement records, and generates sequential invoice.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleCheckoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SaleCheckoutRequest'
+      responses:
+        '302':
+          description: Sale completed successfully, redirects to `/sales/{sale}`
+        '422':
+          description: Cart validation error or insufficient stock
+
+  /sales/{sale}:
+    get:
+      tags:
+        - Point of Sale (POS) & Sales
+      summary: View Sale Invoice
+      description: Renders printable invoice with line items, tax, discount, customer information, and cashier details.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: sale
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Invoice rendered successfully
+        '404':
+          description: Sale invoice not found
+
+  /inventory:
+    get:
+      tags:
+        - Inventory Management
+      summary: List Store Inventory Balances
+      description: Real-time stock levels per store and product with search, filter, and low-stock indicators.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store_id
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Product name or SKU search
+          schema:
+            type: string
+        - name: low_stock
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Inventory stock list rendered successfully
+
+  /inventory/receive:
+    get:
+      tags:
+        - Inventory Management
+      summary: Display Inbound Stock Receiving Form
+      description: Form for receiving supplier purchase orders into store stock.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Inbound receiving form rendered
+    post:
+      tags:
+        - Inventory Management
+      summary: Record Inbound Stock Receipt
+      description: Increases store stock under pessimistic locking and writes an immutable `inbound` stock movement record.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StockReceiveRequest'
+      responses:
+        '302':
+          description: Stock received successfully, redirects to `/inventory`
+        '422':
+          description: Validation error
+
+  /inventory/adjust:
+    get:
+      tags:
+        - Inventory Management
+      summary: Display Physical Count Adjustment Form
+      description: Form to reconcile stock variances (damage, shrinkage, physical count reconciliation).
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Adjustment form rendered
+    post:
+      tags:
+        - Inventory Management
+      summary: Record Physical Count Adjustment
+      description: Reconciles stock balance with mandatory audit justification notes. Creates an `adjustment` stock movement record.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StockAdjustRequest'
+      responses:
+        '302':
+          description: Stock adjusted successfully, redirects to `/inventory`
+        '422':
+          description: Validation error or negative balance violation
+
+  /api/stores/{store}/products/{product}/stock:
+    get:
+      tags:
+        - Inventory Management
+      summary: Real-Time Stock Check API
+      description: High-speed JSON endpoint returning the current available quantity for a product at a specific store.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: product
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Available stock returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  store_id:
+                    type: integer
+                    example: 1
+                  product_id:
+                    type: integer
+                    example: 4
+                  quantity:
+                    type: integer
+                    example: 85
+                  reorder_level:
+                    type: integer
+                    example: 10
+
+  /transfers:
+    get:
+      tags:
+        - Inter-Store Transfers
+      summary: List Inter-Store Transfers
+      description: Paginated transfers list with source store, destination store, status, and item counts.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, in_transit, completed, cancelled]
+      responses:
+        '200':
+          description: Transfers list rendered successfully
+    post:
+      tags:
+        - Inter-Store Transfers
+      summary: Dispatch Inter-Store Transfer
+      description: Validates source and destination stores differ, verifies available quantities, deducts origin store, increments destination store, and creates complementary `transfer_out` and `transfer_in` stock movement pairs.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransferCreateRequest'
+      responses:
+        '302':
+          description: Transfer created, redirects to `/transfers/{transfer}`
+        '422':
+          description: Validation error or insufficient origin stock
+
+  /transfers/create:
+    get:
+      tags:
+        - Inter-Store Transfers
+      summary: Display Inter-Store Transfer Creation Form
+      description: Transfer form with dynamic item selection and live stock validation.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Transfer creation form rendered
+
+  /transfers/{transfer}:
+    get:
+      tags:
+        - Inter-Store Transfers
+      summary: View Transfer Dispatch Note
+      description: Printable transfer document showing tracking number, origin, destination, line items, and audit sign-off.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: transfer
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transfer note rendered successfully
+
+  /movements:
+    get:
+      tags:
+        - Stock Movement Audit Ledger
+      summary: View Immutable Stock Movement Ledger
+      description: Complete double-entry inventory audit trail showing previous balances, mutations, balance after, user attribution, and polymorphic transaction references.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store_id
+          in: query
+          schema:
+            type: integer
+        - name: product_id
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [inbound, sale, transfer_out, transfer_in, adjustment]
+      responses:
+        '200':
+          description: Audit ledger rendered successfully
+
+  /products:
+    get:
+      tags:
+        - Products Catalog
+      summary: List Products
+      description: Master catalog listing with SKU, category, cost price, retail price, and total stock.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Products catalog rendered
+    post:
+      tags:
+        - Products Catalog
+      summary: Create New Product
+      description: Adds a new SKU to the master catalog.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '302':
+          description: Product created, redirects to `/products`
+        '422':
+          description: Validation error (e.g. duplicate SKU)
+
+  /products/create:
+    get:
+      tags:
+        - Products Catalog
+      summary: Display Product Creation Form
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Form rendered
+
+  /products/{product}/edit:
+    get:
+      tags:
+        - Products Catalog
+      summary: Display Product Edit Form
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: product
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Form rendered
+
+  /products/{product}:
+    put:
+      tags:
+        - Products Catalog
+      summary: Update Product Details
+      description: Modifies SKU, title, category, description, and pricing.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: product
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '302':
+          description: Product updated, redirects to `/products`
+    delete:
+      tags:
+        - Products Catalog
+      summary: Delete Product
+      description: Soft or hard deletes product from the catalog if no historical dependencies prevent deletion.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: product
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Product deleted, redirects to `/products`
+
+  /branches:
+    get:
+      tags:
+        - Branches & Stores
+      summary: List Branches & Stores Hierarchy
+      description: Shows regional branches and nested physical store outlets.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Hierarchy view rendered
+    post:
+      tags:
+        - Branches & Stores
+      summary: Create Branch
+      description: Registers a new regional administrative branch.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - name
+                - code
+              properties:
+                name:
+                  type: string
+                  example: Branch 3 — Mombasa
+                code:
+                  type: string
+                  example: MSA-01
+                location:
+                  type: string
+                  example: Mombasa CBD
+      responses:
+        '302':
+          description: Branch created, redirects to `/branches`
+
+  /branches/create:
+    get:
+      tags:
+        - Branches & Stores
+      summary: Display Branch Creation Form
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Form rendered
+
+  /branches/{branch}/edit:
+    get:
+      tags:
+        - Branches & Stores
+      summary: Display Branch Edit Form
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: branch
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Form rendered
+
+  /branches/{branch}:
+    put:
+      tags:
+        - Branches & Stores
+      summary: Update Branch Details
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: branch
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                location:
+                  type: string
+      responses:
+        '302':
+          description: Branch updated, redirects to `/branches`
+
+  /stores/create:
+    get:
+      tags:
+        - Branches & Stores
+      summary: Display Store Creation Form
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Form rendered
+
+  /stores:
+    post:
+      tags:
+        - Branches & Stores
+      summary: Create Store Outlet
+      description: Adds a physical store under an existing regional branch.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - branch_id
+                - name
+                - code
+              properties:
+                branch_id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: Super Center Annex
+                code:
+                  type: string
+                  example: STR-ANNEX
+                address:
+                  type: string
+                  example: Ground Floor, Wing B
+      responses:
+        '302':
+          description: Store created, redirects to `/branches`
+
+  /stores/{store}:
+    get:
+      tags:
+        - Branches & Stores
+      summary: View Store Details & Stock
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Store details and stocks rendered
+    put:
+      tags:
+        - Branches & Stores
+      summary: Update Store Details
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                is_active:
+                  type: boolean
+      responses:
+        '302':
+          description: Store updated, redirects to `/branches`
+
+  /stores/{store}/edit:
+    get:
+      tags:
+        - Branches & Stores
+      summary: Display Store Edit Form
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: store
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Form rendered
+
+  /users:
+    get:
+      tags:
+        - User Management & RBAC
+      summary: List User Accounts (Admin Only)
+      description: Manage users, roles, and store associations. Protected by `role:admin` middleware.
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Users list rendered
+        '403':
+          description: Unauthorized role access
+    post:
+      tags:
+        - User Management & RBAC
+      summary: Provision User Account (Admin Only)
+      description: Creates user with designated role (`admin`, `branch_manager`, `store_manager`) and branch/store scopes.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '302':
+          description: User created, redirects to `/users`
+
+  /users/create:
+    get:
+      tags:
+        - User Management & RBAC
+      summary: Display User Creation Form (Admin Only)
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Form rendered
+
+  /users/{user}/edit:
+    get:
+      tags:
+        - User Management & RBAC
+      summary: Display User Edit Form (Admin Only)
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Form rendered
+
+  /users/{user}:
+    put:
+      tags:
+        - User Management & RBAC
+      summary: Update User Account (Admin Only)
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '302':
+          description: User updated, redirects to `/users`
+    delete:
+      tags:
+        - User Management & RBAC
+      summary: Deactivate / Delete User (Admin Only)
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: User deleted, redirects to `/users`
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Standard Laravel session cookie authentication with CSRF protection (`X-CSRF-TOKEN`).
+
+  schemas:
+    SaleCheckoutRequest:
+      type: object
+      required:
+        - store_id
+        - payment_method
+        - items
+      properties:
+        store_id:
+          type: integer
+          example: 1
+        payment_method:
+          type: string
+          enum: [cash, mpesa, card, bank_transfer, credit]
+          example: cash
+        customer_name:
+          type: string
+          example: John Doe Enterprises
+        customer_phone:
+          type: string
+          example: "+254712345678"
+        discount_amount:
+          type: number
+          format: float
+          example: 250.00
+        tax_amount:
+          type: number
+          format: float
+          example: 160.00
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - product_id
+              - quantity
+              - unit_price
+            properties:
+              product_id:
+                type: integer
+                example: 1
+              quantity:
+                type: integer
+                minimum: 1
+                example: 5
+              unit_price:
+                type: number
+                format: float
+                example: 3100.00
+
+    StockReceiveRequest:
+      type: object
+      required:
+        - store_id
+        - product_id
+        - quantity
+      properties:
+        store_id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 3
+        quantity:
+          type: integer
+          minimum: 1
+          example: 100
+        supplier_name:
+          type: string
+          example: Unga Mills Kenya Ltd
+        remarks:
+          type: string
+          example: PO-8923 Delivery
+
+    StockAdjustRequest:
+      type: object
+      required:
+        - store_id
+        - product_id
+        - adjustment_type
+        - quantity
+        - reason
+      properties:
+        store_id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 3
+        adjustment_type:
+          type: string
+          enum: [add, subtract]
+          example: subtract
+        quantity:
+          type: integer
+          minimum: 1
+          example: 4
+        reason:
+          type: string
+          example: Damaged bags during warehouse pallet rearrangement
+
+    TransferCreateRequest:
+      type: object
+      required:
+        - source_store_id
+        - dest_store_id
+        - items
+      properties:
+        source_store_id:
+          type: integer
+          example: 1
+        dest_store_id:
+          type: integer
+          example: 2
+        notes:
+          type: string
+          example: Inter-branch weekly replenishment
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - product_id
+              - quantity
+            properties:
+              product_id:
+                type: integer
+                example: 2
+              quantity:
+                type: integer
+                minimum: 1
+                example: 20
+
+    ProductRequest:
+      type: object
+      required:
+        - name
+        - sku
+        - cost_price
+        - retail_price
+      properties:
+        name:
+          type: string
+          example: Golden Premium Maize Flour 10kg
+        sku:
+          type: string
+          example: GPM-10KG-01
+        category:
+          type: string
+          example: Grains & Cereals
+        cost_price:
+          type: number
+          format: float
+          example: 850.00
+        retail_price:
+          type: number
+          format: float
+          example: 1050.00
+        reorder_level:
+          type: integer
+          example: 25
+        description:
+          type: string
+          example: Grade A refined white corn flour.
+
+    UserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name:
+          type: string
+          example: Mercy Chebet
+        email:
+          type: string
+          format: email
+          example: mchebet@kkwholesalers.com
+        password:
+          type: string
+          format: password
+          example: password123
+        role:
+          type: string
+          enum: [admin, branch_manager, store_manager]
+          example: store_manager
+        branch_id:
+          type: integer
+          nullable: true
+          example: 1
+        store_id:
+          type: integer
+          nullable: true
+          example: 1
+
+    UserUpdateRequest:
+      type: object
+      required:
+        - name
+        - email
+        - role
+      properties:
+        name:
+          type: string
+          example: Mercy Chebet
+        email:
+          type: string
+          format: email
+          example: mchebet@kkwholesalers.com
+        password:
+          type: string
+          format: password
+          nullable: true
+        role:
+          type: string
+          enum: [admin, branch_manager, store_manager]
+          example: store_manager
+        branch_id:
+          type: integer
+          nullable: true
+        store_id:
+          type: integer
+          nullable: true
+        is_active:
+          type: boolean
+          example: true

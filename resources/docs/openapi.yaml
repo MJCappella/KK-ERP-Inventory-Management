@@ -80,10 +80,20 @@ paths:
           description: Invalid credentials or validation failure
 
   /logout:
+    get:
+      tags:
+        - Authentication & Session
+      summary: Logout User (GET fallback)
+      description: Session termination and redirect to `/login`.
+      security:
+        - sessionAuth: []
+      responses:
+        '302':
+          description: Redirect to `/login`
     post:
       tags:
         - Authentication & Session
-      summary: Logout User
+      summary: Logout User (Standard POST with CSRF)
       description: Invalidates active session, regenerates CSRF token, and logs security audit.
       security:
         - sessionAuth: []

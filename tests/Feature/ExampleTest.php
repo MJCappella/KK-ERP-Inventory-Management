@@ -59,4 +59,45 @@ class ExampleTest extends TestCase
         $response->assertSessionHasErrors('email');
         $this->assertGuest();
     }
+
+    public function test_authenticated_user_can_logout_via_post(): void
+    {
+        $user = User::create([
+            'name' => 'Alice Admin',
+            'email' => 'alice@kkwholesalers.com',
+            'password' => bcrypt('secret123'),
+            'role' => Role::ADMIN,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)->post('/logout');
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('info', 'You have been logged out.');
+        $this->assertGuest();
+    }
+
+    public function test_authenticated_user_can_logout_via_get(): void
+    {
+        $user = User::create([
+            'name' => 'Alice Admin',
+            'email' => 'alice@kkwholesalers.com',
+            'password' => bcrypt('secret123'),
+            'role' => Role::ADMIN,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get('/logout');
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('info', 'You have been logged out.');
+        $this->assertGuest();
+    }
+
+    public function test_unauthenticated_user_accessing_logout_redirects_to_login(): void
+    {
+        $response = $this->get('/logout');
+
+        $response->assertRedirect(route('login'));
+    }
 }

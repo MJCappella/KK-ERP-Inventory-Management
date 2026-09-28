@@ -198,19 +198,40 @@
                     </div>
                 @endif
 
+                <!-- Section: Sign Out -->
+                <div class="pt-2 border-t border-slate-100">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="w-full nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-rose-50 hover:text-rose-600 group text-left cursor-pointer">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-sm text-slate-400 group-hover:text-rose-600 transition-colors"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+
             </nav>
 
             <!-- Sidebar Footer -->
             <div class="p-3 border-t border-slate-200">
-                <div class="bg-slate-50 rounded-lg p-2.5 flex items-center gap-3">
-                    <div
-                        class="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                <div class="bg-slate-50 rounded-lg p-2.5 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div
+                            class="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-bold text-slate-900 truncate">{{ auth()->user()->name }}</p>
+                            <p class="text-[10px] text-slate-500 truncate">{{ auth()->user()->role->label() }}</p>
+                        </div>
                     </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-xs font-bold text-slate-900 truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-[10px] text-slate-500 truncate">{{ auth()->user()->role->label() }}</p>
-                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+                        @csrf
+                        <button type="submit" title="Logout"
+                            class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center justify-center cursor-pointer">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </aside>
@@ -235,6 +256,21 @@
                             @endif
                         </div>
                     </div>
+                </div>
+
+                <!-- Right Controls -->
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
+                        {{ auth()->user()->role->label() }}
+                    </span>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all cursor-pointer">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                            <span class="hidden sm:inline">Logout</span>
+                        </button>
+                    </form>
                 </div>
 
             </header>

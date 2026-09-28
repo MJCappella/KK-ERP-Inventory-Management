@@ -55,7 +55,10 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    public function logout(Request $request)
+    /**
+     * Log the user out of the application and invalidate the session.
+     */
+    public function logout(Request $request): \Illuminate\Http\RedirectResponse
     {
         $user = Auth::user();
 

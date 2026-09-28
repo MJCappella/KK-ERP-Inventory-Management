@@ -29,7 +29,7 @@ Route::post('/switch-user/{user}', [AuthController::class, 'switchUser'])->name(
 
 // Authenticated ERP Routes
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Default redirect to dashboard
     Route::get('/', fn () => redirect()->route('dashboard'));
